@@ -6,9 +6,10 @@
 <style>
 body {
   font-family: Arial;
-  max-width: 700px;
+  max-width: 750px;
   margin: 40px auto;
   direction: rtl;
+  line-height: 1.6;
 }
 h1 { text-align: center; }
 .question { margin-bottom: 15px; }
@@ -36,17 +37,31 @@ button {
 <script>
 
 const questions = [
+
+/* יוזמה */
 { text: "כשאין כיוון ברור, אני לוקחת יוזמה.", type: "initiative", reverse: false },
 { text: "אני מעדיפה שמישהו אחר יוביל.", type: "initiative", reverse: true },
 { text: "אם משהו לא זז, אני דוחפת קדימה.", type: "initiative", reverse: false },
 { text: "אני נהנית להוביל תהליכים.", type: "initiative", reverse: false },
 { text: "נוח לי להישאר ברקע.", type: "initiative", reverse: true },
+{ text: "אני יוזמת שיתופי פעולה חדשים.", type: "initiative", reverse: false },
+{ text: "אני מחכה שיגדירו לי תפקיד לפני שאני פועלת.", type: "initiative", reverse: true },
+{ text: "אני מזהה צורך ומגיבה מיד.", type: "initiative", reverse: false },
+{ text: "אני נמנעת מלקחת אחריות כוללת.", type: "initiative", reverse: true },
+{ text: "אני נהנית להיות זו שמניעה קדימה.", type: "initiative", reverse: false },
 
+/* תיאום */
 { text: "לפני שאני פועלת, חשוב לי שכולם מתואמים.", type: "coordination", reverse: false },
 { text: "אני יכולה להתקדם בלי לתאם.", type: "coordination", reverse: true },
 { text: "תיאום חשוב לי מאוד.", type: "coordination", reverse: false },
 { text: "אם הקבוצה איטית, אני ממשיכה לבד.", type: "coordination", reverse: true },
 { text: "אני מתאימה את עצמי לאחרים כשצריך.", type: "coordination", reverse: false },
+{ text: "אני בודקת עמדות של אחרות לפני החלטה.", type: "coordination", reverse: false },
+{ text: "אני פועלת גם בלי הסכמה רחבה.", type: "coordination", reverse: true },
+{ text: "חשוב לי שכולם ירגישו חלק.", type: "coordination", reverse: false },
+{ text: "עבודה קבוצתית לעיתים מעכבת אותי.", type: "coordination", reverse: true },
+{ text: "אני שומרת על חיבור בין אנשים בתהליך.", type: "coordination", reverse: false },
+
 ];
 
 const quizDiv = document.getElementById("quiz");
@@ -74,11 +89,11 @@ function calculate() {
 
   let result = "";
 
-  if(initiative >= 15 && coordination >= 15)
+  if(initiative >= 30 && coordination >= 30)
     result = "🦁 לביאה – יוזמת ומתאמת";
-  else if(initiative < 15 && coordination >= 15)
+  else if(initiative < 30 && coordination >= 30)
     result = "🐝 דבורה – משתפת ותומכת";
-  else if(initiative >= 15 && coordination < 15)
+  else if(initiative >= 30 && coordination < 30)
     result = "🐆 צ'יטה – יוזמת ועצמאית";
   else
     result = "🐢 צב – רגועה ופחות יוזמת";
