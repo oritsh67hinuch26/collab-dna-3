@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<title>Collab DNA</title>
+<style>
+body {
+  font-family: Arial;
+  max-width: 700px;
+  margin: 40px auto;
+  direction: rtl;
+}
+h1 { text-align: center; }
+.question { margin-bottom: 15px; }
+button {
+  padding: 10px 20px;
+  margin-top: 20px;
+  display: block;
+}
+#result {
+  margin-top: 30px;
+  font-size: 20px;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<h1>מפת שיתוף הפעולה</h1>
+<p>דרגי כל משפט מ-1 (לא נכון) עד 5 (נכון מאוד)</p>
+
+<div id="quiz"></div>
+<button onclick="calculate()">לגלות את הטיפוס שלי</button>
+<div id="result"></div>
+
+<script>
+
+const questions = [
+{ text: "כשאין כיוון ברור, אני לוקחת יוזמה.", type: "initiative", reverse: false },
+{ text: "אני מעדיפה שמישהו אחר יוביל.", type: "initiative", reverse: true },
+{ text: "אם משהו לא זז, אני דוחפת קדימה.", type: "initiative", reverse: false },
+{ text: "אני נהנית להוביל תהליכים.", type: "initiative", reverse: false },
+{ text: "נוח לי להישאר ברקע.", type: "initiative", reverse: true },
+
+{ text: "לפני שאני פועלת, חשוב לי שכולם מתואמים.", type: "coordination", reverse: false },
+{ text: "אני יכולה להתקדם בלי לתאם.", type: "coordination", reverse: true },
+{ text: "תיאום חשוב לי מאוד.", type: "coordination", reverse: false },
+{ text: "אם הקבוצה איטית, אני ממשיכה לבד.", type: "coordination", reverse: true },
+{ text: "אני מתאימה את עצמי לאחרים כשצריך.", type: "coordination", reverse: false },
+];
+
+const quizDiv = document.getElementById("quiz");
+
+questions.forEach((q, i) => {
+  quizDiv.innerHTML += `
+    <div class="question">
+      <p>${i+1}. ${q.text}</p>
+      <input type="range" min="1" max="5" value="3" id="q${i}">
+    </div>
+  `;
+});
+
+function calculate() {
+  let initiative = 0;
+  let coordination = 0;
+
+  questions.forEach((q, i) => {
+    let val = parseInt(document.getElementById("q"+i).value);
+    if(q.reverse) val = 6 - val;
+
+    if(q.type === "initiative") initiative += val;
+    if(q.type === "coordination") coordination += val;
+  });
+
+  let result = "";
+
+  if(initiative >= 15 && coordination >= 15)
+    result = "🦁 לביאה – יוזמת ומתאמת";
+  else if(initiative < 15 && coordination >= 15)
+    result = "🐝 דבורה – משתפת ותומכת";
+  else if(initiative >= 15 && coordination < 15)
+    result = "🐆 צ'יטה – יוזמת ועצמאית";
+  else
+    result = "🐢 צב – רגועה ופחות יוזמת";
+
+  document.getElementById("result").innerText = result;
+}
+
+</script>
+
+</body>
+</html>
