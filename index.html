@@ -1,107 +1,53 @@
-<!DOCTYPE html>
-<html lang="he">
-<head>
-<meta charset="UTF-8">
-<title>Collab DNA</title>
-<style>
-body {
-  font-family: Arial;
-  max-width: 750px;
-  margin: 40px auto;
-  direction: rtl;
-  line-height: 1.6;
-}
-h1 { text-align: center; }
-.question { margin-bottom: 15px; }
-button {
-  padding: 10px 20px;
-  margin-top: 20px;
-  display: block;
-}
-#result {
-  margin-top: 30px;
-  font-size: 20px;
-  font-weight: bold;
-}
-</style>
-</head>
-<body>
-
-<h1>מפת שיתוף הפעולה</h1>
-<p>דרגי כל משפט מ-1 (לא נכון) עד 5 (נכון מאוד)</p>
-
-<div id="quiz"></div>
-<button onclick="calculate()">לגלות את הטיפוס שלי</button>
-<div id="result"></div>
-
 <script>
-
 const questions = [
-
-/* יוזמה */
-{ text: "כשאין כיוון ברור, אני לוקחת יוזמה.", type: "initiative", reverse: false },
-{ text: "אני מעדיפה שמישהו אחר יוביל.", type: "initiative", reverse: true },
-{ text: "אם משהו לא זז, אני דוחפת קדימה.", type: "initiative", reverse: false },
-{ text: "אני נהנית להוביל תהליכים.", type: "initiative", reverse: false },
-{ text: "נוח לי להישאר ברקע.", type: "initiative", reverse: true },
-{ text: "אני יוזמת שיתופי פעולה חדשים.", type: "initiative", reverse: false },
-{ text: "אני מחכה שיגדירו לי תפקיד לפני שאני פועלת.", type: "initiative", reverse: true },
-{ text: "אני מזהה צורך ומגיבה מיד.", type: "initiative", reverse: false },
-{ text: "אני נמנעת מלקחת אחריות כוללת.", type: "initiative", reverse: true },
-{ text: "אני נהנית להיות זו שמניעה קדימה.", type: "initiative", reverse: false },
-
-/* תיאום */
-{ text: "לפני שאני פועלת, חשוב לי שכולם מתואמים.", type: "coordination", reverse: false },
-{ text: "אני יכולה להתקדם בלי לתאם.", type: "coordination", reverse: true },
-{ text: "תיאום חשוב לי מאוד.", type: "coordination", reverse: false },
-{ text: "אם הקבוצה איטית, אני ממשיכה לבד.", type: "coordination", reverse: true },
-{ text: "אני מתאימה את עצמי לאחרים כשצריך.", type: "coordination", reverse: false },
-{ text: "אני בודקת עמדות של אחרות לפני החלטה.", type: "coordination", reverse: false },
-{ text: "אני פועלת גם בלי הסכמה רחבה.", type: "coordination", reverse: true },
-{ text: "חשוב לי שכולם ירגישו חלק.", type: "coordination", reverse: false },
-{ text: "עבודה קבוצתית לעיתים מעכבת אותי.", type: "coordination", reverse: true },
-{ text: "אני שומרת על חיבור בין אנשים בתהליך.", type: "coordination", reverse: false },
-
+  { text: "בישיבות צוות אני נוטה להוביל את הדיון קדימה.", type: "initiative" },
+  { text: "חשוב לי שכולם ירגישו שנשמע קולם לפני שמתקבלת החלטה.", type: "coordination" },
+  { text: "אם משהו מתעכב – אני פשוט מתחילה לפעול גם בלי סגירה מלאה.", type: "initiative" },
+  { text: "אני מעדיפה להמתין ולהבין לעומק לפני שאני מציעה כיוון.", type: "initiative_reverse" },
+  { text: "אני לוקחת אחריות גם על התיאום בין אנשים.", type: "coordination" },
+  { text: "כשיש מתח בצוות, אני מנסה להרגיע ולחבר בין הצדדים.", type: "coordination" },
+  { text: "קשה לי לעבוד בקצב איטי או בתהליך ארוך מדי.", type: "initiative" },
+  { text: "אני מרגישה בנוח לעבוד לבד מבלי לעדכן כל הזמן.", type: "coordination_reverse" },
+  { text: "חשוב לי שמהלך חדש יהיה מוסכם ולא ייכפה.", type: "coordination" },
+  { text: "אני מזהה במהירות מה צריך לקרות ופועלת מיד.", type: "initiative" },
+  { text: "אם איני בטוחה בתמונה המלאה – אעדיף לא ליזום.", type: "initiative_reverse" },
+  { text: "אני נוטה לראות את התמונה הרחבה ולכוון אחרים בהתאם.", type: "initiative" },
+  { text: "אני מעדיפה יציבות על פני שינוי מהיר.", type: "initiative_reverse" },
+  { text: "כשיש מחלוקת, אני מנסה למצוא את נקודת האמצע.", type: "coordination" },
+  { text: "לעיתים אני מקדמת דברים גם אם לא כולם מרוצים.", type: "initiative" },
+  { text: "אני נזהרת לא למשוך תשומת לב מיותרת בדיונים.", type: "initiative_reverse" },
+  { text: "אני חשה אחריות לכך שהצוות ינוע קדימה.", type: "initiative" },
+  { text: "אני משקיעה זמן ביצירת הרמוניה בצוות.", type: "coordination" },
+  { text: "אני מעדיפה לפעול באופן עצמאי ופחות תלוי באחרים.", type: "coordination_reverse" },
+  { text: "חשוב לי שהמהלך יהיה מדויק גם אם זה לוקח יותר זמן.", type: "initiative_reverse" }
 ];
 
-const quizDiv = document.getElementById("quiz");
+let initiativeScore = 0;
+let coordinationScore = 0;
 
-questions.forEach((q, i) => {
-  quizDiv.innerHTML += `
-    <div class="question">
-      <p>${i+1}. ${q.text}</p>
-      <input type="range" min="1" max="5" value="3" id="q${i}">
-    </div>
-  `;
-});
+function calculateResult() {
+  initiativeScore = 0;
+  coordinationScore = 0;
 
-function calculate() {
-  let initiative = 0;
-  let coordination = 0;
+  questions.forEach((q, index) => {
+    const value = parseInt(document.querySelector(`input[name="q${index}"]:checked`)?.value || 0);
 
-  questions.forEach((q, i) => {
-    let val = parseInt(document.getElementById("q"+i).value);
-    if(q.reverse) val = 6 - val;
-
-    if(q.type === "initiative") initiative += val;
-    if(q.type === "coordination") coordination += val;
+    if (q.type === "initiative") initiativeScore += value;
+    if (q.type === "coordination") coordinationScore += value;
+    if (q.type === "initiative_reverse") initiativeScore += (6 - value);
+    if (q.type === "coordination_reverse") coordinationScore += (6 - value);
   });
+
+  const initiativeHigh = initiativeScore >= 60;
+  const coordinationHigh = coordinationScore >= 60;
 
   let result = "";
 
-  if(initiative >= 30 && coordination >= 30)
-    result = "🦁 לביאה – יוזמת ומתאמת";
-  else if(initiative < 30 && coordination >= 30)
-    result = "🐝 דבורה – משתפת ותומכת";
-  else if(initiative >= 30 && coordination < 30)
-    result = "🐆 צ'יטה – יוזמת ועצמאית";
-  else
-    result = "🐢 צב – רגועה ופחות יוזמת";
+  if (initiativeHigh && coordinationHigh) result = "🦁 לביאה – מנהיגה מערכתית";
+  else if (!initiativeHigh && coordinationHigh) result = "🐝 דבורה – מחברת ומלכדת";
+  else if (initiativeHigh && !coordinationHigh) result = "🐆 צ'יטה – יוזמת ודוחפת קדימה";
+  else result = "🐢 צב – מייצבת ושקולה";
 
   document.getElementById("result").innerText = result;
 }
-
 </script>
-
-</body>
-</html>
