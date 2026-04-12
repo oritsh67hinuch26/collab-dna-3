@@ -1,3 +1,19 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <title>שאלון</title>
+</head>
+<body>
+
+<h2>שאלון</h2>
+
+<form id="quiz"></form>
+
+<button onclick="calculateResult()">חשב תוצאה</button>
+
+<h3 id="result"></h3>
+
 <script>
 const questions = [
   { text: "בישיבות צוות אני נוטה להוביל את הדיון קדימה.", type: "initiative" },
@@ -21,6 +37,24 @@ const questions = [
   { text: "אני מעדיפה לפעול באופן עצמאי ופחות תלוי באחרים.", type: "coordination_reverse" },
   { text: "חשוב לי שהמהלך יהיה מדויק גם אם זה לוקח יותר זמן.", type: "initiative_reverse" }
 ];
+
+const quiz = document.getElementById("quiz");
+
+// יצירת השאלות על המסך
+questions.forEach((q, index) => {
+  const div = document.createElement("div");
+
+  div.innerHTML = `
+    <p>${index + 1}. ${q.text}</p>
+    ${[1,2,3,4,5].map(v => `
+      <label>
+        <input type="radio" name="q${index}" value="${v}"> ${v}
+      </label>
+    `).join("")}
+  `;
+
+  quiz.appendChild(div);
+});
 
 let initiativeScore = 0;
 let coordinationScore = 0;
@@ -51,3 +85,6 @@ function calculateResult() {
   document.getElementById("result").innerText = result;
 }
 </script>
+
+</body>
+</html>
